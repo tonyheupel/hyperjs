@@ -51,7 +51,17 @@ namespace TonyHeupel.HyperJS
             {
                 dynamic o = new JSObject();
                 self = self ?? o;
-                o.toString = new Func<string>(delegate() { return BaseToString(self); });
+                o.toString = new Func<string>(delegate() 
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendLine(string.Format("Number of members: {0}", self.Count));
+                        foreach (object member in self)
+                        {
+                            sb.AppendLine(member.ToString());
+                        }
+
+                        return sb.ToString();
+                    });
 
                 return o;
             });
@@ -209,17 +219,6 @@ namespace TonyHeupel.HyperJS
             return go.Object(self);
         }
 
-        private static string BaseToString(JSObject hh)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(string.Format("Number of members: {0}", hh.Count));
-            foreach (object o in hh)
-            {
-                sb.AppendLine(o.ToString());
-            }
-
-            return sb.ToString();
-        }
         #endregion
 
         public static dynamic RangeError()
