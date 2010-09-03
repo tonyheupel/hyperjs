@@ -9,6 +9,30 @@ namespace TonyHeupel.HyperJS
 {
     public class JSObject : HyperHypo
     {
+        public JSObject() : this (null)
+        {
+
+        }
+        public JSObject(JSObject self)
+        {
+            if (JS.cs != null) this.Prototype = JS.cs.Prototype;
+
+            dynamic that = this;
+            self = self ?? that;
+            that.toString = new Func<string>(delegate()
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine(string.Format("Number of members: {0}", self.Count));
+                foreach (object member in self)
+                {
+                    sb.AppendLine(member.ToString());
+                }
+
+                return sb.ToString();
+            });
+
+            that.valueOf = new Func<dynamic>(() => self);
+        }
         public static implicit operator bool(JSObject o)
         {
             return ConvertToBoolean(o);

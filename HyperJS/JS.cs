@@ -48,36 +48,11 @@ namespace TonyHeupel.HyperJS
             /// inheritance so that Object's methods have access to the real "this" (since
             /// this won't work the same way as in JavaScript.)
             /// </summary>
-            that.Object = new Func<dynamic, dynamic>(delegate(dynamic self)
-            {
-                dynamic o = new JSObject();
-                self = self ?? o;
-                o.toString = new Func<string>(delegate() 
-                    {
-                        var sb = new StringBuilder();
-                        sb.AppendLine(string.Format("Number of members: {0}", self.Count));
-                        foreach (object member in self)
-                        {
-                            sb.AppendLine(member.ToString());
-                        }
+            that.Object = new Func<dynamic, dynamic>(self => new JSObject(self));
 
-                        return sb.ToString();
-                    });
+            that.Boolean = new Func<dynamic, dynamic>(value => new JSBoolean(value));
 
-                o.valueOf = new Func<dynamic>(() => self);
-
-                return o;
-            });
-
-            that.Boolean = new Func<dynamic, dynamic>(delegate(dynamic value)
-                {
-                    return new JSBoolean(value);
-                });
-
-            that.String = new Func<dynamic, dynamic>(delegate(dynamic value)
-                {
-                    return new JSString(value);
-                });
+            that.String = new Func<dynamic, dynamic>(value => new JSString(value));
         }
 
         #region undedfined

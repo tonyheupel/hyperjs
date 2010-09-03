@@ -13,8 +13,6 @@ namespace TonyHeupel.HyperJS
 
         public JSString(dynamic value)
         {
-            this.Prototype = JS.cs.Prototype;
-
             _primitiveValue = (value == null) ? null : (value is JSObject && JS.cs.Boolean(value.toString as string)) ? value.toString() : value.ToString();
 
             dynamic that = this;

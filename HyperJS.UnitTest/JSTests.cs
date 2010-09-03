@@ -52,7 +52,7 @@ namespace HyperJS.UnitTest
             dynamic s = JS.cs.NewString("hello");
             Assert.IsInstanceOfType(s, typeof(JSString));
             // Need to fix the Prototype such that the functions themselves have properties too...
-            s.Prototype.foobar = new Func<bool>(() => true);
+            s.Prototype.foobar = new Func<bool>(() => true);  // Inadvertantly sets ALL Prototypes from root object to have foobar
             Assert.IsInstanceOfType(s.valueOf(), typeof(String));
             Assert.IsInstanceOfType(s.toString(), typeof(String));
             Assert.AreEqual("hello", s.valueOf());
