@@ -22,7 +22,7 @@ namespace HyperJS.UnitTest
             Assert.IsFalse(JS.cs.Boolean(null));
             Assert.IsFalse(JS.cs.Boolean(0));
             Assert.IsFalse(JS.cs.Boolean(false));
-            Assert.IsFalse(JS.cs.Boolean(String.Empty));
+            Assert.IsFalse(JS.cs.Boolean(string.Empty));
             Assert.IsFalse(JS.cs.Boolean("false"));
             Assert.IsFalse(JS.undefined);
             Assert.IsFalse(JS.NaN);
@@ -50,7 +50,7 @@ namespace HyperJS.UnitTest
         public void StringConstructorFunctionReturnsStringProperly()
         {
             dynamic s = JS.cs.NewString("hello");
-            Assert.IsInstanceOfType(s, typeof(JSObject));
+            Assert.IsInstanceOfType(s, typeof(JSString));
             // Need to fix the Prototype such that the functions themselves have properties too...
             s.Prototype.foobar = new Func<bool>(() => true);
             Assert.IsInstanceOfType(s.valueOf(), typeof(String));
@@ -59,7 +59,6 @@ namespace HyperJS.UnitTest
             Assert.AreEqual("hello", s.toString());
             Assert.IsTrue(s.foobar());
         }
-
 
     }
 }

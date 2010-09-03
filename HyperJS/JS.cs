@@ -39,7 +39,7 @@ namespace TonyHeupel.HyperJS
         /// </summary>
         private JS()
         {
-            this.Prototype = new JSObject();
+            this.Prototype = new JSObject(); // Single prototype for all
             dynamic that = this;  //Fun JavaScript trick to make "this" a dynamic so we can just bind things to it
 
             /// <summary>
@@ -71,66 +71,22 @@ namespace TonyHeupel.HyperJS
 
             that.Boolean = new Func<dynamic, dynamic>(delegate(dynamic value)
                 {
-                    dynamic b = new JSObject();
-
-                    b.valueOf = new Func<bool>(delegate() 
-                        {
-                            dynamic v = (value is JSObject && !(value is Undefined || value is NaNClass)) ? value.valueOf() : value;
-                            if (v == null ||
-                               (v is String && (v == "" || v == "false")) ||
-                               (v is Boolean && v == false) ||
-                               ((v is Int32 || v is Int64 || v is Int16) && v == 0) ||
-                               v is NaNClass ||
-                               v is Undefined)
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                return true;
-                            }
-                        });
-
-                    b.toString = new Func<string>(() => b.valueOf().ToString().ToLower());
-
-                    return b;
+                    return new JSBoolean(value);
                 });
 
             that.String = new Func<dynamic, dynamic>(delegate(dynamic value)
                 {
-                    dynamic s = new JSObject();
-                    s.Prototype = that.Object(s);
-
-                    string _primitiveStringValue = (value == null) ? null : (value is JSObject && that.Boolean(value.toString)) ? value.toString() : value.ToString();
-
-                    s.valueOf = s.toString = new Func<string>(() => _primitiveStringValue);
-
-                    return s;
+                    return new JSString(value);
                 });
         }
 
         #region undedfined
-        private class Undefined : JSObject
-        {
-            public override string ToString()
-            {
-                return "undefined";
-            }
-        }
-        private static readonly Undefined _undefined = new Undefined();
+        private static readonly JSUndefined _undefined = new JSUndefined();
         public static dynamic undefined { get { return _undefined; } }
         #endregion
 
         #region NaN
-        // TODO: redefine in terms of something else?
-        private class NaNClass : JSObject
-        {
-            public override string ToString()
-            {
-                return "NaN";
-            }
-        }
-        private static readonly NaNClass _nan = new NaNClass();
+        private static readonly JSNaN _nan = new JSNaN();
         public static dynamic NaN { get { return _nan; } }
         #endregion
 
