@@ -11,12 +11,12 @@ namespace TonyHeupel.HyperJS
     {
         public static implicit operator bool(JSObject o)
         {
-            return ConvertToHyperJSBoolean(o);
+            return ConvertToBoolean(o);
         }
 
-        protected static bool ConvertToHyperJSBoolean(object o)
+        protected static bool ConvertToBoolean(object o)
         {
-            return JS.cs.Boolean(o);
+            return JS.go.Boolean(o).valueOf();
         }
 
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)

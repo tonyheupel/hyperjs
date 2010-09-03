@@ -39,6 +39,7 @@ namespace TonyHeupel.HyperJS
         /// </summary>
         private JS()
         {
+            this.Prototype = new JSObject();
             dynamic that = this;  //Fun JavaScript trick to make "this" a dynamic so we can just bind things to it
 
             /// <summary>
@@ -63,8 +64,49 @@ namespace TonyHeupel.HyperJS
                         return sb.ToString();
                     });
 
+                o.valueOf = new Func<dynamic>(() => self);
+
                 return o;
             });
+
+            that.Boolean = new Func<dynamic, dynamic>(delegate(dynamic value)
+                {
+                    dynamic b = new JSObject();
+
+                    b.valueOf = new Func<bool>(delegate() 
+                        {
+                            dynamic v = (value is JSObject && !(value is Undefined || value is NaNClass)) ? value.valueOf() : value;
+                            if (v == null ||
+                               (v is String && (v == "" || v == "false")) ||
+                               (v is Boolean && v == false) ||
+                               ((v is Int32 || v is Int64 || v is Int16) && v == 0) ||
+                               v is NaNClass ||
+                               v is Undefined)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
+                        });
+
+                    b.toString = new Func<string>(() => b.valueOf().ToString().ToLower());
+
+                    return b;
+                });
+
+            that.String = new Func<dynamic, dynamic>(delegate(dynamic value)
+                {
+                    dynamic s = new JSObject();
+                    s.Prototype = that.Object(s);
+
+                    string _primitiveStringValue = (value == null) ? null : (value is JSObject && that.Boolean(value.toString)) ? value.toString() : value.ToString();
+
+                    s.valueOf = s.toString = new Func<string>(() => _primitiveStringValue);
+
+                    return s;
+                });
         }
 
         #region undedfined
@@ -137,126 +179,9 @@ namespace TonyHeupel.HyperJS
         #endregion
         #endregion
 
-        #region Global Functions
-
-        // Global functions are implemented as instance methods so that:
-        // 1) Extensions can be added on seemlessly to the global object
-        //    through the JS.cs.<function> accessor
-        // 2) The global object is a singleton anyway, so there's very
-        //    little to gain.  Worst case, implement a private static
-        //    method with a slightly different name and have the instance
-        //    method call it.
-
-        #region Global Objects
-
-        public static dynamic Array()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// The Boolean(value) function on the global object.
-        /// It returns a Boolean converted from the value passed in. 
-        /// 0, NaN, null, "", undefined, false and "false" are false.
-        /// Everything else will return true.
-        /// </summary>
-        public bool Boolean(dynamic value)
-        {
-            if (value == null ||
-               (value is String && (value == "" || value == "false")) ||
-               (value is Boolean && value == false) ||
-               ((value is Int32 || value is Int64 || value is Int16) && value == 0) ||
-               value is NaNClass ||
-               value is Undefined)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-
-        public dynamic Date()
-        {
-            throw new NotImplementedException();
-        }
-
-        public dynamic Error()
-        {
-            throw new NotImplementedException();
-        }
-
-        public dynamic EvalError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public dynamic Function()
-        {
-            throw new NotImplementedException();
-        }
-
         public class Math : JSObject
         {
 
         }
-
-        public static dynamic Number()
-        {
-            throw new NotImplementedException();
-        }
-
-        #region Object
-        public static dynamic Object()
-        {
-            return Object(null);
-        }
-
-        public static dynamic Object(JSObject self)
-        {
-            return go.Object(self);
-        }
-
-        #endregion
-
-        public static dynamic RangeError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic ReferenceError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic RegExp()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic String()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic SyntaxError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic TypeError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static dynamic URIError()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        #endregion
     }
 }
