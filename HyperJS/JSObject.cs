@@ -60,7 +60,7 @@ namespace TonyHeupel.HyperJS
             if (createPrototype)
             {
                 // Note: NEED to use "JSObject" as hard-coded string here or every constructor
-                // for any base classes will have an inadvertant prototype created since
+                // for any subclasses will have an inadvertant prototype created since
                 // this.GetType().Name will return the base class name...that should be 
                 // handled later in the sublcass constructor with an explicit line.
                 this.Prototype = GetPrototype("JSObject", new JSObject(false));
