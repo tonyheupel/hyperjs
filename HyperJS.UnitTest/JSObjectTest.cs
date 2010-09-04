@@ -27,14 +27,14 @@ namespace TonyHeupel.HyperJS.UnitTest
         [TestMethod]
         public void JSObjectMissingMembersAreUndefined()
         {
-            dynamic foo = JS.cs.Object();
+            dynamic foo = JS.cs.NewObject();
             Assert.AreSame(JS.undefined, foo.bar);
         }
 
         [TestMethod]
         public void FeatureDetectionWorks_KindOf()
         {
-            dynamic foo = JS.cs.Object();
+            dynamic foo = JS.cs.NewObject();
             if (JS.cs.Boolean(foo.bar as object)) 
             {
                 Assert.Fail("bar should not be defined yet");

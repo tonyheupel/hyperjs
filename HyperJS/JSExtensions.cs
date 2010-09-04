@@ -68,14 +68,14 @@ namespace TonyHeupel.HyperJS
         }
 
         #region JSObject
-        public static dynamic Object(this JS js)
+        public static dynamic NewObject(this JS js)
         {
-            return JSObject(js, null);
+            return NewObject(js, null);
         }
 
-        public static dynamic JSObject(this JS js, JSObject self)
+        public static dynamic NewObject(this JS js, dynamic value)
         {
-            return new JSObject(self);
+            return new JSObject(value, true);
         }
 
         #endregion
@@ -95,10 +95,14 @@ namespace TonyHeupel.HyperJS
             throw new NotImplementedException();
         }
 
-        public static string JSString(this JS js, dynamic value)
+        public static string String(this JS js, dynamic value)
         {
-            dynamic s = new JSString(value);
-            return s.valueOf();
+            return NewString(js, value).valueOf();
+        }
+
+        public static dynamic NewString(this JS js, dynamic value)
+        {
+            return new JSString(value);
         }
 
         public static dynamic SyntaxError(this JS js)
