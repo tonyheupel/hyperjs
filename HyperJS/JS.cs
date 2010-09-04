@@ -53,7 +53,7 @@ namespace TonyHeupel.HyperJS
         private JS() : base(false)
         {
             dynamic that = this;  //Fun JavaScript trick to make "this" a dynamic so we can just bind things to it
-            that.Prototypes = new JSObject(false);
+            this.Prototypes = new JSObject(false);
             //that.Boolean = new Func<dynamic, dynamic>(value => new JSBoolean(value));
         }
 

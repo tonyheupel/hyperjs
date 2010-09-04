@@ -21,12 +21,12 @@ namespace TonyHeupel.HyperJS
             that.toString = that.valueOf = new Func<string>(() => that.Prototype.toString(that));
         }
 
-        protected dynamic GetPrototype()
+        protected override dynamic GetPrototype()
         {
             dynamic p = new JSObject();
             p.toString = p.valueOf = new Func<dynamic, string>((self) => self._primitiveValue);
 
-            return GetPrototype("JSString", p);
+            return GetPrototype(this.GetType().Name, p);
         }
     }
 }

@@ -32,7 +32,6 @@ namespace TonyHeupel.HyperJS
 
         private object _primitiveValue;
 
-
         public JSObject() : this(null, true) {}
 
         public JSObject(bool createPrototype) : this(null, createPrototype) { }
@@ -60,7 +59,12 @@ namespace TonyHeupel.HyperJS
             // Use this class's prototype
             if (createPrototype)
             {
+                // Note: NEED to use "JSObject" as hard-coded string here or every constructor
+                // for any base classes will have an inadvertant prototype created since
+                // this.GetType().Name will return the base class name...that should be 
+                // handled later in the sublcass constructor with an explicit line.
                 this.Prototype = GetPrototype("JSObject", new JSObject(false));
+                JS.cs.Prototypes.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(OnPrototypeChanged);
             }
 
 
@@ -74,15 +78,38 @@ namespace TonyHeupel.HyperJS
             //}
         }
 
+        protected void OnPrototypeChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == GetPrototypeKeyName(this.GetType().Name)) this.Prototype = GetPrototype();
+        }
+
+        protected virtual dynamic GetPrototype()
+        {
+            return GetPrototype(this.GetType().Name);
+        }
+
+        protected static dynamic GetPrototype(string typeName)
+        {
+            return GetPrototype(typeName, null);
+        }
         protected static dynamic GetPrototype(string typeName, dynamic defaultValue)
         {
-            string key = String.Format("{0}_prototype", typeName);
-            if (!JS.cs.Prototypes.ContainsKey(key))
+            string key = GetPrototypeKeyName(typeName);
+            if (!JS.cs.Prototypes.ContainsKey(key) && defaultValue != null)
             {
-                JS.cs.Prototypes[key] = defaultValue;
+                SetPrototype(typeName, defaultValue);
             }
 
             return JS.cs.Prototypes[key];
+        }
+
+        protected static void SetPrototype(string typeName, dynamic value)
+        {
+            JS.cs.Prototypes[GetPrototypeKeyName(typeName)] = value;
+        }
+        private static string GetPrototypeKeyName(string typeName)
+        {
+            return String.Format("{0}_prototype", typeName);
         }
     }
 

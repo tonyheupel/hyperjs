@@ -15,7 +15,7 @@ namespace TonyHeupel.HyperJS
             _primitiveValue = CalculateBoolean(value);
 
             dynamic that = this;
-          
+
             that.valueOf = new Func<bool>(() =>  that.Prototype.valueOf(that));
 
             that.toString = new Func<string>(() => that.Prototype.toString(that));
@@ -40,13 +40,13 @@ namespace TonyHeupel.HyperJS
             }
         }
 
-        protected dynamic GetPrototype()
+        protected override dynamic GetPrototype()
         {
             dynamic p = new JSObject();
             p.valueOf = new Func<dynamic, bool>((self) => self._primitiveValue);
             p.toString = new Func<dynamic, string>((self) => self._primitiveValue ? "true" : "false");
 
-            return GetPrototype("JSBoolean", p) as object;
+            return GetPrototype(this.GetType().Name, p);
         }
     }
 }
