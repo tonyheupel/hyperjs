@@ -49,15 +49,22 @@ namespace HyperJS.UnitTest
         [TestMethod]
         public void StringConstructorFunctionReturnsStringProperly()
         {
-            dynamic s = JS.cs.NewString("hello");
+            dynamic s = new JSString("hello");
             Assert.IsInstanceOfType(s, typeof(JSString));
             // Need to fix the Prototype such that the functions themselves have properties too...
-            s.Prototype.foobar = new Func<bool>(() => true);  // Inadvertantly sets ALL Prototypes from root object to have foobar
+            ((dynamic) new JSObject()).Prototype.bizbuzz = new Func<string, string>((name) => "hello, " + name);
+            ((dynamic) new JSString()).Prototype.foobar = new Func<bool>(() => true);  // Inadvertantly sets ALL Prototypes from root object to have foobar
             Assert.IsInstanceOfType(s.valueOf(), typeof(String));
             Assert.IsInstanceOfType(s.toString(), typeof(String));
             Assert.AreEqual("hello", s.valueOf());
             Assert.AreEqual("hello", s.toString());
             Assert.IsTrue(s.foobar());
+
+            Assert.AreEqual("hello, tony", s.bizbuzz("tony"));
+            dynamic thing = new JSObject();
+            Assert.AreEqual("hello, tony", thing.bizbuzz("tony"));
+
+            Assert.AreEqual(3, thing.Count); //foobar should not show up on JSObject's prototype....
         }
 
     }

@@ -47,7 +47,9 @@
     <Compile Include="JSBoolean.cs" />
     <Compile Include="JSExtensions.cs" />
     <Compile Include="JSNaN.cs" />
-    <Compile Include="JSObject.cs" />
+    <Compile Include="JSObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="JSUndefined.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSString.cs" />

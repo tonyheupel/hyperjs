@@ -10,7 +10,7 @@ namespace TonyHeupel.HyperJS
     /// <summary>
     /// The Global object.
     /// JS.go - Playing with JavaScript-type object creation within C# using closures
-    /// and dynamic types with my HyperJS/HyperHypo (more than C#, less than JavaScript) class.
+    /// and dynamic types with my JSObject/HyperHypo (more than C#, less than JavaScript) class.
     /// </summary>
     public class JS : JSObject
     {
@@ -18,42 +18,46 @@ namespace TonyHeupel.HyperJS
         /// go is the dynamic instance accessor for the JS
         /// global object.
         /// </summary>
-        public static dynamic go { get { return _globalObject; } }
+        public static dynamic go { get { return JS.cs; } }
 
         /// <summary>
         /// Maybe it should be called cs, but I like
         /// the JS.go idea, so fork it an write your own
         /// if you don't like it :-)
         /// </summary>
-        public static JS cs { get { return _globalObject; } }
-        // TODO: Determine if this actually works for the singleton initialization...
-        //       Normally, I would put it on the getter and do a first-time-accessed
-        //       initialization with a lock for thread safety, but I think that would
-        //       be slower than having it load when this comes into the app domain
-        //       initially (but I'm not yet sure if that's what's really happening
-        //       or if it really is thread-safe yet)...
-        private static dynamic _globalObject = new JS();
-        
+        public static JS cs 
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+                    if (_globalObject == null)
+                    {
+                        _globalObject = new JS();
+                        //_globalObject.Prototype = new JSObject(); // Single prototype for all
+                    }
+
+
+                }
+
+                return _globalObject;
+            }
+        }
+
+        private static volatile dynamic _globalObject;
+        private static object syncRoot = new Object();
+
         /// <summary>
         /// Private constructor since the global object is a singleton
         /// </summary>
-        private JS()
+        private JS() : base(false)
         {
-            this.Prototype = new JSObject(); // Single prototype for all
             dynamic that = this;  //Fun JavaScript trick to make "this" a dynamic so we can just bind things to it
-
-            /// <summary>
-            /// The Object() function on the global object.  It returns a new instance of
-            /// a dynamic object.  Pass in a non-null self parameter when doing prototype
-            /// inheritance so that Object's methods have access to the real "this" (since
-            /// this won't work the same way as in JavaScript.)
-            /// </summary>
-            that.Object = new Func<dynamic, dynamic>(self => new JSObject(self));
-
-            that.Boolean = new Func<dynamic, dynamic>(value => new JSBoolean(value));
-
-            that.String = new Func<dynamic, dynamic>(value => new JSString(value));
+            that.Prototypes = new JSObject(false);
+            //that.Boolean = new Func<dynamic, dynamic>(value => new JSBoolean(value));
         }
+
+        public dynamic Prototypes { get; set; }
 
         #region undedfined
         private static readonly JSUndefined _undefined = new JSUndefined();
@@ -68,7 +72,7 @@ namespace TonyHeupel.HyperJS
         #region Infinity
         // TODO: redefine this in terms of Numeric later and reference Numeric.POSITIVE_INFINITY constant?
         //       (actually, I'm hoping Function() or some use of delegate or Func<> returning a dynamic
-        //       will allow HyperJS to attach properties to method/function instances so I can actually do something
+        //       will allow JSObject to attach properties to method/function instances so I can actually do something
         //       like Numeric.POSITIVE_INFINITY; otherwise, I'll have to fake it with a Numeric class and a static
         //       public constant; then creating a Numeric is "JS.Numeric(value)" and there will be
         //       "Numeric.POSITIVE_INFINITY" on a Numeric class...trying to avoid creating actual C# classes, though
@@ -85,7 +89,7 @@ namespace TonyHeupel.HyperJS
         #endregion
 
         #region junk - Java-related items
-        #region Packages - TODO: redefine this in terms of Object later?
+        #region Packages - TODO: redefine this in terms of JSObject later?
         private class JavaPackage : JSObject
         {
             string Name { get; set; }

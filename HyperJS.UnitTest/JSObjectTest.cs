@@ -20,7 +20,7 @@ namespace TonyHeupel.HyperJS.UnitTest
         [TestMethod()]
         public void JSObjectConstructorTest()
         {
-            JSObject target = new JSObject();
+            var target = new JSObject();
             Assert.IsInstanceOfType(target, typeof(HyperCore.HyperHypo));
         }
 

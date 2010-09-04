@@ -13,11 +13,20 @@ namespace TonyHeupel.HyperJS
 
         public JSString(dynamic value)
         {
+            this.Prototype = GetPrototype();
             _primitiveValue = (value == null) ? null : (value is JSObject && JS.cs.Boolean(value.toString as string)) ? value.toString() : value.ToString();
 
             dynamic that = this;
 
-            that.toString = that.valueOf = new Func<string>(() => _primitiveValue);
+            that.toString = that.valueOf = new Func<string>(() => that.Prototype.toString(that));
+        }
+
+        protected dynamic GetPrototype()
+        {
+            dynamic p = new JSObject();
+            p.toString = p.valueOf = new Func<dynamic, string>((self) => self._primitiveValue);
+
+            return GetPrototype("JSString", p);
         }
     }
 }

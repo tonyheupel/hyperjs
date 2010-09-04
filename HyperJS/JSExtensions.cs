@@ -32,25 +32,12 @@ namespace TonyHeupel.HyperJS
         /// </summary>
         public static bool Boolean(this JS js, object value)
         {
-            //if (value == null ||
-            //   (value is String && (value == "" || value == "false")) ||
-            //   (value is Boolean && value == false) ||
-            //   ((value is Int32 || value is Int64 || value is Int16) && value == 0) ||
-            //   value is NaNClass ||
-            //   value is Undefined)
-            //{
-            //    return false;
-            //}
-            //else
-            //{
-            //    return true;
-            //}
-            return JS.go.Boolean(value).valueOf();
+            return ((dynamic)new JSBoolean(value)).valueOf();
         }
 
         public static dynamic NewBoolean(this JS js, dynamic value)
         {
-            return JS.go.Boolean(value);
+            return new JSBoolean(value);
         }
 
 
@@ -80,15 +67,15 @@ namespace TonyHeupel.HyperJS
             throw new NotImplementedException();
         }
 
-        #region Object
+        #region JSObject
         public static dynamic Object(this JS js)
         {
-            return Object(js, null);
+            return JSObject(js, null);
         }
 
-        public static dynamic Object(this JS js, JSObject self)
+        public static dynamic JSObject(this JS js, JSObject self)
         {
-            return JS.go.Object(self);
+            return new JSObject(self);
         }
 
         #endregion
@@ -108,14 +95,10 @@ namespace TonyHeupel.HyperJS
             throw new NotImplementedException();
         }
 
-        public static string String(this JS js, dynamic value)
+        public static string JSString(this JS js, dynamic value)
         {
-            return JS.go.String(value).valueOf();
-        }
-
-        public static dynamic NewString(this JS js, dynamic value)
-        {
-            return JS.go.String(value);
+            dynamic s = new JSString(value);
+            return s.valueOf();
         }
 
         public static dynamic SyntaxError(this JS js)
