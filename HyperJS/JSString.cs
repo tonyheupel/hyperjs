@@ -5,28 +5,34 @@ using System.Text;
 
 namespace TonyHeupel.HyperJS
 {
-    public class JSString : JSObject
+    public static class JSString
     {
-        private string _primitiveValue;
-
-        public JSString() : this(null) {}
-
-        public JSString(dynamic value)
+        public static string String(this JS js, dynamic value)
         {
-            this.Prototype = GetPrototype();
-            _primitiveValue = (value == null) ? null : (value is JSObject && JS.cs.Boolean(value.toString as string)) ? value.toString() : value.ToString();
-
-            dynamic that = this;
-
-            that.toString = that.valueOf = new Func<string>(() => that.Prototype.toString(that));
+            return NewString(js, value).valueOf();
         }
 
-        protected override dynamic GetPrototype()
+        public static dynamic NewString(this JS js, dynamic value)
         {
-            dynamic p = new JSObject();
-            p.toString = p.valueOf = new Func<dynamic, string>((self) => self._primitiveValue);
+            //return new ClassStyle.JSString(value);
+            return StringConstructor(js, value);
+        }
 
-            return GetPrototype(this.GetType().Name, p);
+        private static dynamic StringConstructor(this JS js, dynamic value)
+        {
+            dynamic s = new JSObject();
+            s.JSTypeName = "String";
+
+            // Set up the prototype first
+            dynamic p = new JSObject();
+            s.Prototype = s.GetPrototype(p);
+
+            // Set up the instance behavior
+            var _primitiveValue = (value == null) ? null : (value is JSObject && JS.cs.Boolean(value.toString as string)) ? value.toString() : value.ToString();
+
+            s.toString = s.valueOf = new Func<string>(() => _primitiveValue);
+
+            return s;
         }
     }
 }

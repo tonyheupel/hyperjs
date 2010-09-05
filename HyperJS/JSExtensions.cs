@@ -24,23 +24,7 @@ namespace TonyHeupel.HyperJS
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// The Boolean(value) function on the global object.
-        /// It returns a Boolean converted from the value passed in. 
-        /// 0, NaN, null, "", undefined, false and "false" are false.
-        /// Everything else will return true.
-        /// </summary>
-        public static bool Boolean(this JS js, object value)
-        {
-            return ((dynamic)new JSBoolean(value)).valueOf();
-        }
-
-        public static dynamic NewBoolean(this JS js, dynamic value)
-        {
-            return new JSBoolean(value);
-        }
-
-
+        
 
         public static dynamic Date(this JS js)
         {
@@ -95,15 +79,7 @@ namespace TonyHeupel.HyperJS
             throw new NotImplementedException();
         }
 
-        public static string String(this JS js, dynamic value)
-        {
-            return NewString(js, value).valueOf();
-        }
-
-        public static dynamic NewString(this JS js, dynamic value)
-        {
-            return new JSString(value);
-        }
+        
 
         public static dynamic SyntaxError(this JS js)
         {

@@ -16,7 +16,8 @@ namespace TonyHeupel.HyperJS
 
         protected static bool ConvertToBoolean(object o)
         {
-            return ((dynamic)new JSBoolean(o)).valueOf();
+            //TODO: See if we can remove the tight coupling with JS.cs here...
+            return JS.cs.Boolean(o);
         }
 
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
@@ -32,12 +33,16 @@ namespace TonyHeupel.HyperJS
 
         private object _primitiveValue;
 
+        public string JSTypeName { get; set; }
+
         public JSObject() : this(null, true) {}
 
         public JSObject(bool createPrototype) : this(null, createPrototype) { }
 
         public JSObject(dynamic self, bool createPrototype)
         {
+            this.JSTypeName = this.GetType().Name; // Default to old-school class inheritance
+
             if (self != null & !(self is JSObject)) _primitiveValue = self;
 
             dynamic that = this;
@@ -61,38 +66,31 @@ namespace TonyHeupel.HyperJS
             {
                 // Note: NEED to use "JSObject" as hard-coded string here or every constructor
                 // for any subclasses will have an inadvertant prototype created since
-                // this.GetType().Name will return the base class name...that should be 
+                // JSTypeName will return the base class name...that should be 
                 // handled later in the sublcass constructor with an explicit line.
                 this.Prototype = GetPrototype("JSObject", new JSObject(false));
                 JS.cs.Prototypes.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(OnPrototypeChanged);
             }
-
-
-            // Set up the JSObject global function (register it if not already registered)
-            //if (!JS.cs.Boolean(JS.go.JSObject as object))
-            //{
-            //    JS.go.JSObject = new Func<dynamic, dynamic>(delegate(dynamic value)
-            //    {
-            //        return new JSObject(value);
-            //    });
-            //}
         }
 
         protected void OnPrototypeChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == GetPrototypeKeyName(this.GetType().Name)) this.Prototype = GetPrototype();
+            if (e.PropertyName == GetPrototypeKeyName(JSTypeName)) this.Prototype = GetPrototype();
         }
 
-        protected virtual dynamic GetPrototype()
+        public virtual dynamic GetPrototype()
         {
-            return GetPrototype(this.GetType().Name);
+            return GetPrototype(JSTypeName);
         }
-
-        protected static dynamic GetPrototype(string typeName)
+        public virtual dynamic GetPrototype(JSObject defaultValue)
+        {
+            return GetPrototype(JSTypeName, defaultValue);
+        }
+        public static dynamic GetPrototype(string typeName)
         {
             return GetPrototype(typeName, null);
         }
-        protected static dynamic GetPrototype(string typeName, dynamic defaultValue)
+        public static dynamic GetPrototype(string typeName, dynamic defaultValue)
         {
             string key = GetPrototypeKeyName(typeName);
             if (!JS.cs.Prototypes.ContainsKey(key) && defaultValue != null)
@@ -103,11 +101,11 @@ namespace TonyHeupel.HyperJS
             return JS.cs.Prototypes[key];
         }
 
-        protected static void SetPrototype(string typeName, dynamic value)
+        public static void SetPrototype(string typeName, dynamic value)
         {
             JS.cs.Prototypes[GetPrototypeKeyName(typeName)] = value;
         }
-        private static string GetPrototypeKeyName(string typeName)
+        protected static string GetPrototypeKeyName(string typeName)
         {
             return String.Format("{0}_prototype", typeName);
         }

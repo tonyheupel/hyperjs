@@ -43,6 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassStyle\JSBoolean.cs" />
+    <Compile Include="ClassStyle\JSString.cs" />
     <Compile Include="JS.cs" />
     <Compile Include="JSBoolean.cs" />
     <Compile Include="JSExtensions.cs" />
