@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TonyHeupel.HyperJS
 {
@@ -18,13 +15,17 @@ namespace TonyHeupel.HyperJS
             return NewBoolean(js, value).valueOf();
         }
 
+        /// <summary>
+        /// The Boolean(value) constructor function.
+        /// It returns a Boolean object converted from the value passed in.
+        /// </summary>
         public static dynamic NewBoolean(this JS js, dynamic value)
         {
             //return new ClassStyle.JSBoolean(value);
             return BooleanConstructor(js, value);
         }
 
-        public static dynamic BooleanConstructor(this JS js, dynamic value)
+        private static dynamic BooleanConstructor(this JS js, dynamic value)
         {
             dynamic b = new JSObject();
             b.JSTypeName = "Boolean";
