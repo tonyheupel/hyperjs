@@ -101,6 +101,10 @@ namespace TonyHeupel.HyperJS
             return JS.cs.Prototypes[key];
         }
 
+        public virtual void SetPrototype(dynamic value)
+        {
+            SetPrototype(JSTypeName, value);
+        }
         public static void SetPrototype(string typeName, dynamic value)
         {
             JS.cs.Prototypes[GetPrototypeKeyName(typeName)] = value;
