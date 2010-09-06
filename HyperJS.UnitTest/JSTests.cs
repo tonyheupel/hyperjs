@@ -63,24 +63,30 @@ namespace HyperJS.UnitTest
         public void PrototypeFun()
         {
             dynamic s = JS.cs.NewString("hello");
-
-            JS.cs.NewObject().Prototype.bizbuzz = new Func<string, string>((name) => "hello, " + name);
-            JS.cs.NewString(null).Prototype.foobar = new Func<bool>(() => true);  // Check it doesn't inadvertantly set ALL Prototypes from root object to have foobar
-
-            Assert.IsTrue(s.foobar());
-
-            Assert.AreEqual("hello, tony", s.bizbuzz("tony"));
             dynamic thing = new JSObject();
+
+            thing.Prototype.bizbuzz = new Func<string, string>((name) => "hello, " + name);
+            s.Prototype.foobar = new Func<bool>(() => true);  // Check it doesn't inadvertantly set ALL Prototypes from root object to have foobar
+
+            // bizbuzz method available on all objects
+            Assert.AreEqual("hello, tony", s.bizbuzz("tony"));
             Assert.AreEqual("hello, tony", thing.bizbuzz("tony"));
 
+            // foobar set oon string prototype, but not exposed to object
+            Assert.IsTrue(s.foobar()); 
+            Assert.IsFalse(thing.foobar); // Feature detection -- not set on object prototype
+
+
             Assert.AreEqual(3, thing.Count); //foobar should not show up on JSObject's prototype....
-            Assert.AreEqual(4, s.Count); // foobar and bizbuzz are on JString's prototype
+            Assert.AreEqual(4, s.Count); // foobar and bizbuzz are available to previously created string instances
             
+            // Create new string prototype and set it
             dynamic newPrototype = new JSObject();
             newPrototype.skunkWorks = "skunky!";
-            s.SetPrototype(newPrototype);
+            s.SetPrototype(newPrototype);  // skunkWorks now available on string
 
-            Assert.AreEqual(3, thing.Count); // Updating string's prototype shouldn't mess with Object
+            Assert.AreEqual(3, thing.Count);  // Updating string's prototype shouldn't mess with Object
+            Assert.IsFalse(thing.skunkWorks); // Feature detection - make sure skunkWorks not on object
             Assert.AreEqual(4, s.Count); // toString, valueOf, skunkWorks, and bizbuzz (no foobar)
             Assert.AreEqual("skunky!", s.skunkWorks); // Can access it through string instance previously created
             Assert.IsFalse(s.foobar);  // Feature detection - since prototype was changed, no longer there!
