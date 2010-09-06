@@ -53,13 +53,20 @@ namespace HyperJS.UnitTest
             Assert.IsInstanceOfType(s, typeof(JSObject));//JSString));
             Assert.AreEqual("String", s.JSTypeName);
             
-            JS.cs.NewObject().Prototype.bizbuzz = new Func<string, string>((name) => "hello, " + name);
-            JS.cs.NewString(null).Prototype.foobar = new Func<bool>(() => true);  // Check it doesn't inadvertantly set ALL Prototypes from root object to have foobar
-            
             Assert.IsInstanceOfType(s.valueOf(), typeof(String));
             Assert.IsInstanceOfType(s.toString(), typeof(String));
             Assert.AreEqual("hello", s.valueOf());
             Assert.AreEqual("hello", s.toString());
+        }
+
+        [TestMethod]
+        public void PrototypeFun()
+        {
+            dynamic s = JS.cs.NewString("hello");
+
+            JS.cs.NewObject().Prototype.bizbuzz = new Func<string, string>((name) => "hello, " + name);
+            JS.cs.NewString(null).Prototype.foobar = new Func<bool>(() => true);  // Check it doesn't inadvertantly set ALL Prototypes from root object to have foobar
+
             Assert.IsTrue(s.foobar());
 
             Assert.AreEqual("hello, tony", s.bizbuzz("tony"));
@@ -67,6 +74,16 @@ namespace HyperJS.UnitTest
             Assert.AreEqual("hello, tony", thing.bizbuzz("tony"));
 
             Assert.AreEqual(3, thing.Count); //foobar should not show up on JSObject's prototype....
+            Assert.AreEqual(4, s.Count); // foobar and bizbuzz are on JString's prototype
+            
+            dynamic newPrototype = new JSObject();
+            newPrototype.skunkWorks = "skunky!";
+            s.SetPrototype(newPrototype);
+
+            Assert.AreEqual(3, thing.Count); // Updating string's prototype shouldn't mess with Object
+            Assert.AreEqual(4, s.Count); // toString, valueOf, skunkWorks, and bizbuzz (no foobar)
+            Assert.AreEqual("skunky!", s.skunkWorks); // Can access it through string instance previously created
+            Assert.IsFalse(s.foobar);  // Feature detection - since prototype was changed, no longer there!
         }
 
     }
