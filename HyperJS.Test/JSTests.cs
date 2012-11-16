@@ -2,7 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using TonyHeupel.HyperCore;
 using TonyHeupel.HyperJS;
@@ -12,11 +12,11 @@ namespace HyperJS.UnitTest
     /// <summary>
     /// Unit tests for JS class
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class JSTests
     {
  
-        [TestMethod]
+        [Test]
         public void BooleanFunctionReturnsFalseProperly()
         {
             Assert.IsFalse(JS.cs.Boolean(null));
@@ -31,7 +31,7 @@ namespace HyperJS.UnitTest
             
         }
 
-        [TestMethod]
+        [Test]
         public void BooleanFunctionReturnsTrueProperly()
         {
             Assert.IsTrue(JS.cs.Boolean("False"));
@@ -46,20 +46,20 @@ namespace HyperJS.UnitTest
             Assert.IsTrue(JS.cs.NewBoolean(" "));
         }
 
-        [TestMethod]
+        [Test]
         public void StringConstructorFunctionReturnsStringProperly()
         {
             dynamic s = JS.cs.NewString("hello");
-            Assert.IsInstanceOfType(s, typeof(JSObject));//JSString));
+			Assert.IsInstanceOfType(typeof(JSObject), s);//JSString));
             Assert.AreEqual("String", s.JSTypeName);
             
-            Assert.IsInstanceOfType(s.valueOf(), typeof(String));
-            Assert.IsInstanceOfType(s.toString(), typeof(String));
+			Assert.IsInstanceOfType(typeof(String), s.valueOf());
+			Assert.IsInstanceOfType(typeof(String), s.toString());
             Assert.AreEqual("hello", s.valueOf());
             Assert.AreEqual("hello", s.toString());
         }
 
-        [TestMethod]
+        [Test]
         public void PrototypeFun()
         {
             dynamic s = JS.cs.NewString("hello");

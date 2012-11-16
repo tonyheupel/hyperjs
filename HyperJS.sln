@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperJS", "HyperJS\HyperJS.csproj", "{50D2201F-1897-486B-A41F-3DB9AFA1D476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperJS.UnitTest", "HyperJS.UnitTest\HyperJS.UnitTest.csproj", "{D0031E38-3505-4E1D-B5E3-8BC9CCC3351F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D0FB5330-859B-4226-9B57-86B0DD8FD39F}"
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 		readme.txt = readme.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperJS.Test", "HyperJS.Test\HyperJS.Test.csproj", "{DDF1D79C-677F-4577-9885-F7F362A7EDF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,15 @@ Global
 		{50D2201F-1897-486B-A41F-3DB9AFA1D476}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50D2201F-1897-486B-A41F-3DB9AFA1D476}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50D2201F-1897-486B-A41F-3DB9AFA1D476}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0031E38-3505-4E1D-B5E3-8BC9CCC3351F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0031E38-3505-4E1D-B5E3-8BC9CCC3351F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0031E38-3505-4E1D-B5E3-8BC9CCC3351F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0031E38-3505-4E1D-B5E3-8BC9CCC3351F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF1D79C-677F-4577-9885-F7F362A7EDF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF1D79C-677F-4577-9885-F7F362A7EDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF1D79C-677F-4577-9885-F7F362A7EDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF1D79C-677F-4577-9885-F7F362A7EDF0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = HyperJS\HyperJS.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 ﻿using TonyHeupel.HyperJS;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Dynamic;
 
@@ -11,27 +11,27 @@ namespace TonyHeupel.HyperJS.UnitTest
     /// Tests for JSObject, which is the base class for 
     /// the dynamic objects for HyperJS/JS.cs
     ///</summary>
-    [TestClass()]
+    [TestFixture()]
     public class JSObjectTest
     {
         /// <summary>
         ///A test for JSObject Constructor
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void JSObjectConstructorTest()
         {
             var target = new JSObject();
-            Assert.IsInstanceOfType(target, typeof(HyperCore.HyperHypo));
+			Assert.IsInstanceOfType(typeof(HyperCore.HyperHypo), target);
         }
 
-        [TestMethod]
+        [Test]
         public void JSObjectMissingMembersAreUndefined()
         {
             dynamic foo = JS.cs.NewObject();
             Assert.AreSame(JS.undefined, foo.bar);
         }
 
-        [TestMethod]
+        [Test]
         public void FeatureDetectionWorks_KindOf()
         {
             dynamic foo = JS.cs.NewObject();
